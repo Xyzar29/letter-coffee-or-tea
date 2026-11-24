@@ -16,5 +16,14 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
+
+// The answer, and the guard that protects it: the gate requires exactly
+// one ASCII letter. Validate the payload before anything touches disk so
+// a bad value can never silently become the entry — fail loudly instead.
+const answer = "A";
+if (!/^[A-Z]$/.test(answer)) {
+  throw new Error(`invalid entry: expected exactly one ASCII letter, got ${JSON.stringify(answer)}`);
+}
+
 mkdirSync(outDir, { recursive: true });
-writeFileSync(join(outDir, "entry.txt"), "A", "utf8");
+writeFileSync(join(outDir, "entry.txt"), answer, "utf8");
